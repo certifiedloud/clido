@@ -8,6 +8,7 @@ except ImportError:
     print("dopy is required. pip install dopy and try again")
 
 # set the API token for authenticated interaction
+#IDEA cycle through a list of tokens to avoid rate limiting
 config_file= expanduser('~') + '/.clido.cfg'
 f = open(config_file, 'r')
 api_token = f.readline().split('=')[1]
