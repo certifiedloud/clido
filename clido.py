@@ -52,7 +52,7 @@ parser.add_argument('-r', '--region',
                     help="region-slug of droplet to create")
 args = parser.parse_args()
 
-# Ensure that all required args are present for droplet creation
+# Ensure that all required args are present for droplet creation when -c is used
 if args.create_droplet:
     if args.name is None or args.size is None or \
             args.image is None or args.region is None:
