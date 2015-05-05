@@ -103,10 +103,10 @@ if args.list_droplet_details:
 # Create a droplet based on the given arguments
 if args.create_droplet:
     digitalocean.Droplet(token=api_token,
-                         name='testdrop',
-                         image='coreos-alpha',
-                         region='nyc3',
-                         size_slug='1gb').create()
+                         name=args.name,
+                         image=args.image,
+                         region=args.region,
+                         size_slug=args.size).create()
 
 
 # If the program hasn't exited by now, just show a list of active droplets
