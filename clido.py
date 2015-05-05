@@ -29,6 +29,8 @@ parser = argparse.ArgumentParser(description=description)
 parser.add_argument('-l', '--list-droplet-details',
                     help="Show details of droplet. Use the"
                     "ID number of the droplet")
+parser.add_argument('--all-domains', action="store_true",
+                    help="List all domains on the account")
 parser.add_argument('--all-regions', action="store_true",
                     help="Show all regions availalbe")
 parser.add_argument('--all-images', action="store_true",
@@ -50,11 +52,16 @@ parser.add_argument('-r', '--region',
                     help="region-slug of droplet to create")
 args = parser.parse_args()
 
+# Ensure that all required args are present for droplet creation
 if args.create_droplet:
     if args.name is None or args.size is None or \
             args.image is None or args.region is None:
         parser.error("When using -c, you must specify -n <name>"
                      "-s <size> -i <image> and -r <region>")
+
+# Print a list of domains
+if args.all_domains:
+    print(json.dumps(do.all_domains(), sort_keys=True, indent=4))
 
 # Print a detailed list of available regions
 if args.all_regions:
@@ -83,7 +90,6 @@ if args.list_droplet_details:
     sys.exit(0)
 
 if args.create_droplet:
-    print(args.name, args.size, args.image, args.region)
     do.new_droplet(args.name, args.size, args.image, args.region)
 
 # If the program hasn't exited by now, just show a list of active droplets
