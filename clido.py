@@ -9,7 +9,7 @@ except ImportError:
     print("python-digitalocean is required. pip install it and try again")
 
 # Set the API token for authenticated interaction
-# IDEA cycle through a list of tokens to avoid rate limiting
+# TODO cycle through a list of tokens to avoid rate limiting
 config_file = expanduser('~') + '/.clido.cfg'
 f = open(config_file, 'r')
 api_token = f.readline().split('=')[1].strip()
@@ -102,6 +102,7 @@ if args.list_droplet_details:
 
 # Create a droplet based on the given arguments
 if args.create_droplet:
+    # TODO add other options such as ssh keys, backups, etc.
     try:
         new_droplet = digitalocean.Droplet(token=api_token,
                                            name=args.name,
