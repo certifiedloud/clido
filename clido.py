@@ -50,7 +50,7 @@ parser.add_argument('-i', '--image',
                     help="image-slug of droplet to create")
 parser.add_argument('-r', '--region',
                     help="region-slug of droplet to create")
-parser.add_argument('-k', '--ssh-keys', default=[], nargs='+',
+parser.add_argument('-k', '--ssh-keys', default=[], nargs='+', type=int,
                     help="list of ssh key id's to add to new droplets")
 args = parser.parse_args()
 
