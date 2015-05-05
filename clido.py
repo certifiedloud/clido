@@ -1,5 +1,4 @@
 import argparse
-import json
 import sys
 from os.path import expanduser
 
@@ -96,8 +95,8 @@ if args.all_sizes:
 
 # Show the details of a single droplet and exit
 if args.list_droplet_details:
-    droplets = do.show_droplet(args.list_droplet_details)
-    print(json.dumps(droplets, sort_keys=True, indent=4))
+    # This should be more verbose
+    print(do.get_droplet(args.list_droplet_details))
     sys.exit(0)
 
 # Create a droplet based on the given arguments
@@ -108,8 +107,14 @@ if args.create_droplet:
                          region=args.region,
                          size_slug=args.size).create()
 
-
 # If the program hasn't exited by now, just show a list of active droplets
 droplets = do.get_all_droplets()
 for droplet in droplets:
     print(droplet)
+
+droplet = digitalocean.Droplet(token=api_token, name='test',
+                               image='phpmyadmin',
+                               region='sfo1',
+                               size_slug='512mb',
+                               ssh_keys=[None]).create()
+print(droplet)
