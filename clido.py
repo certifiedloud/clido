@@ -40,7 +40,7 @@ parser.add_argument('--all-sizes', action="store_true",
 parser.add_argument('-c', '--create-droplet', action="store_true",
                     help="create droplet. -c  -n <name> -s <size>"
                     "-i <image> -r <region>")
-parser.add_argument('--destroy-droplet', action="store_true",
+parser.add_argument('--destroy-droplet',
                     help="destroy droplet by <id>")
 parser.add_argument('-n', '--name',
                     help="name of droplet to create")
@@ -116,12 +116,14 @@ if args.create_droplet:
         print("Unable to create droplet: {}".format(e))
         sys.exit(1)
 
-if args.destsroy_droplet:
+if args.destroy_droplet:
     try:
         droplet_to_destroy = do.get_droplet(args.destroy_droplet)
         droplet_to_destroy.destroy()
-    except Error as e:
-        print("Unable to delete droplet: {}".format(e))
+        sys.exit(0)
+    except Exception as e:
+        print("Unable to destroy droplet: {}".format(e))
+        sys.exit(1)
 
 # If the program hasn't exited by now, just show a list of active droplets
 droplets = do.get_all_droplets()
