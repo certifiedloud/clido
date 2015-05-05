@@ -5,10 +5,10 @@ from os.path import expanduser
 
 
 try:
-    from dopy.manager import DoManager
+    import digitalocean
 
 except ImportError:
-    print("dopy is required. pip install dopy and try again")
+    print("python-digitalocean is required. pip install it and try again")
 
 # Set the API token for authenticated interaction
 # IDEA cycle through a list of tokens to avoid rate limiting
@@ -17,7 +17,7 @@ f = open(config_file, 'r')
 api_token = f.readline().split('=')[1]
 
 # Initialize the API
-do = DoManager(None, api_token, api_version=2)
+do = digitalocean.Manager(token=api_token)
 
 # Use argparse to set all of the CLI options
 description = """
@@ -61,26 +61,37 @@ if args.create_droplet:
 
 # Print a list of domains
 if args.all_domains:
-    print(json.dumps(do.all_domains(), sort_keys=True, indent=4))
+    domains = do.get_all_domains()
+    for domain in domains:
+        print(domain)
+    sys.exit(0)
 
 # Print a detailed list of available regions
 if args.all_regions:
-    print(json.dumps(do.all_regions(), sort_keys=True, indent=4))
+    regions = do.get_all_regions()
+    for region in regions:
+        print("{}({})".format(region, region.slug))
     sys.exit(0)
 
 # Print a detailed list of available images
 if args.all_images:
-    print(json.dumps(do.all_images(), sort_keys=True, indent=4))
+    images = do.get_all_images()
+    for image in images:
+        print("{}({})".format(image, image.slug))
     sys.exit(0)
 
 # Print a detailed list of available ssh keys
 if args.all_ssh_keys:
-    print(json.dumps(do.all_ssh_keys(), sort_keys=True, indent=4))
+    keys = do.get_all_sshkeys()
+    for key in keys:
+        print(key)
     sys.exit(0)
 
 # Print a detailed list of available droplet sizes
 if args.all_sizes:
-    print(json.dumps(do.sizes(), sort_keys=True, indent=4))
+    sizes = do.get_all_sizes()
+    for size in sizes:
+        print(size)
     sys.exit(0)
 
 # Show the details of a single droplet and exit
@@ -91,8 +102,14 @@ if args.list_droplet_details:
 
 # Create a droplet based on the given arguments
 if args.create_droplet:
-    do.new_droplet(args.name, args.size, args.image, args.region)
+    digitalocean.Droplet(token=api_token,
+                         name='testdrop',
+                         image='coreos-alpha',
+                         region='nyc3',
+                         size_slug='1gb').create()
+
 
 # If the program hasn't exited by now, just show a list of active droplets
-for droplet in do.all_active_droplets():
-    print("{} {}".format(droplet['name'], droplet['id']))
+droplets = do.get_all_droplets()
+for droplet in droplets:
+    print(droplet)
