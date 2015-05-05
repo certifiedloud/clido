@@ -104,12 +104,12 @@ if args.list_droplet_details:
 if args.create_droplet:
     try:
         new_droplet = digitalocean.Droplet(token=api_token,
-                                        name=args.name,
-                                        image=args.image,
-                                        region=args.region,
-                                        size_slug=args.size)
+                                           name=args.name,
+                                           image=args.image,
+                                           region=args.region,
+                                           size_slug=args.size)
         new_droplet.create()
-        print("Successfuly created {}({})"\
+        print("Successfuly created {}({})"
               .format(new_droplet.name, new_droplet.id))
         sys.exit(0)
 
