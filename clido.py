@@ -89,6 +89,7 @@ if args.list_droplet_details:
     print(json.dumps(droplets, sort_keys=True, indent=4))
     sys.exit(0)
 
+# Create a droplet based on the given arguments
 if args.create_droplet:
     do.new_droplet(args.name, args.size, args.image, args.region)
 
