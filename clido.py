@@ -12,7 +12,7 @@ except ImportError:
 # IDEA cycle through a list of tokens to avoid rate limiting
 config_file = expanduser('~') + '/.clido.cfg'
 f = open(config_file, 'r')
-api_token = f.readline().split('=')[1]
+api_token = f.readline().split('=')[1].strip()
 
 # Initialize the API
 do = digitalocean.Manager(token=api_token)
@@ -100,20 +100,21 @@ if args.list_droplet_details:
 
 # Create a droplet based on the given arguments
 if args.create_droplet:
-    digitalocean.Droplet(token=api_token,
-                         name=args.name,
-                         image=args.image,
-                         region=args.region,
-                         size_slug=args.size).create()
+    try:
+        new_droplet = digitalocean.Droplet(token=api_token,
+                                        name=args.name,
+                                        image=args.image,
+                                        region=args.region,
+                                        size_slug=args.size)
+        new_droplet.create()
+        print("Successfuly created {}({})".format(new_droplet.name, new_droplet.id))
+        sys.exit(0)
+
+    except Exception as e:
+        print("Unable to create droplet: {}".format(e))
+        sys.exit(1)
 
 # If the program hasn't exited by now, just show a list of active droplets
 droplets = do.get_all_droplets()
 for droplet in droplets:
     print(droplet)
-
-droplet = digitalocean.Droplet(token=api_token, name='test',
-                               image='phpmyadmin',
-                               region='sfo1',
-                               size_slug='512mb',
-                               ssh_keys=[None]).create()
-print(droplet)
