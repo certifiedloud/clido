@@ -2,7 +2,6 @@ import argparse
 import sys
 from os.path import expanduser
 
-
 try:
     import digitalocean
 
