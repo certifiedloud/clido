@@ -109,7 +109,8 @@ if args.create_droplet:
                                         region=args.region,
                                         size_slug=args.size)
         new_droplet.create()
-        print("Successfuly created {}({})".format(new_droplet.name, new_droplet.id))
+        print("Successfuly created {}({})"\
+              .format(new_droplet.name, new_droplet.id))
         sys.exit(0)
 
     except Exception as e:
