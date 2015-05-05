@@ -50,6 +50,8 @@ parser.add_argument('-i', '--image',
                     help="image-slug of droplet to create")
 parser.add_argument('-r', '--region',
                     help="region-slug of droplet to create")
+parser.add_argument('-k', '--ssh-keys', default=[], nargs='+',
+                    help="list of ssh key id's to add to new droplets")
 args = parser.parse_args()
 
 # Ensure that all required args are present for droplet creation when -c is used
@@ -108,7 +110,8 @@ if args.create_droplet:
                                            name=args.name,
                                            image=args.image,
                                            region=args.region,
-                                           size_slug=args.size)
+                                           size_slug=args.size,
+                                           ssh_keys=args.ssh_keys)
         new_droplet.create()
         print("Successfuly created {}({})"
               .format(new_droplet.name, new_droplet.id))
