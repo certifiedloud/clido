@@ -30,13 +30,13 @@ parser.add_argument('-l', '--list-droplet-details',
 parser.add_argument('--all-domains', action="store_true",
                     help="List all domains on the account")
 parser.add_argument('--all-regions', action="store_true",
-                    help="Show all regions availalbe")
+                    help="Show all regions available")
 parser.add_argument('--all-images', action="store_true",
-                    help="Show all images availalbe")
+                    help="Show all images available")
 parser.add_argument('--all-ssh-keys', action="store_true",
-                    help="Show all ssh keys availalbe")
+                    help="Show all ssh keys available")
 parser.add_argument('--all-sizes', action="store_true",
-                    help="Show all sizes availalbe")
+                    help="Show all sizes available")
 parser.add_argument('-c', '--create-droplet', action="store_true",
                     help="create droplet. -c  -n <name> -s <size>"
                     "-i <image> -r <region>")
