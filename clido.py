@@ -54,7 +54,7 @@ parser.add_argument('-k', '--ssh-keys', default=[], nargs='+', type=int,
                     help="list of ssh key id's to add to new droplets")
 args = parser.parse_args()
 
-# Ensure that all required args are present for droplet creation when -c is used
+# Check that all required args are present for droplet creation when -c is used
 if args.create_droplet:
     if args.name is None or args.size is None or \
             args.image is None or args.region is None:
