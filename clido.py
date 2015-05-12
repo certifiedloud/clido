@@ -65,7 +65,7 @@ if args.create_droplet:
 if args.all_domains:
     domains = do.get_all_domains()
     for domain in domains:
-        print("{} {}".format(domain.id, domain))
+        print(domain)
     sys.exit(0)
 
 # Print a detailed list of available regions
