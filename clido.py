@@ -100,6 +100,16 @@ elif args.operand == 'domains':
                 print("Unable to create domain: {}".format(e))
                 sys.exit(1)
 
+    # check if we want to destroy a domain
+    if args.destroy:
+        try:
+            digitalocean.Domain(token=api_token,
+                                name=args.destroy).destroy()
+            sys.exit(0)
+        except Exception as e:
+            print("Couldn't destroy domain: {}".format(e))
+            sys.exit(1)
+
     # If nothing else, just print a list of domains
     domains = do.get_all_domains()
     for domain in domains:
