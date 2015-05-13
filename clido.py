@@ -24,24 +24,14 @@ When run without any arguments, you simply get a list of
 all the active droplets in the specified account
 """
 parser = argparse.ArgumentParser(description=description)
-parser.add_argument('-l', '--list-droplet-details',
-                    help="Show details of droplet. Use the"
-                    "ID number of the droplet")
-parser.add_argument('--all-domains', action="store_true",
-                    help="List all domains on the account")
-parser.add_argument('--all-regions', action="store_true",
-                    help="Show all regions available")
-parser.add_argument('--all-images', action="store_true",
-                    help="Show all images available")
-parser.add_argument('--all-ssh-keys', action="store_true",
-                    help="Show all ssh keys available")
-parser.add_argument('--all-sizes', action="store_true",
-                    help="Show all sizes available")
+parser.add_argument('operand',
+                    help="specify one of the following: "\
+                    "droplets, domains, images, sizes, regions, keys.")
 parser.add_argument('-c', '--create-droplet', action="store_true",
                     help="create droplet. -c  -n <name> -s <size>"
                     "-i <image> -r <region>")
-parser.add_argument('--destroy-droplet',
-                    help="destroy droplet by <id>")
+parser.add_argument('-d', '--destroy',
+                    help="destroy <operand> by <id>")
 parser.add_argument('-n', '--name',
                     help="name of droplet to create")
 parser.add_argument('-s', '--size',
@@ -61,76 +51,49 @@ if args.create_droplet:
         parser.error("When using -c, you must specify -n <name>"
                      "-s <size> -i <image> and -r <region>")
 
-# Print a list of domains
-if args.all_domains:
-    domains = do.get_all_domains()
-    for domain in domains:
-        print(domain)
-    sys.exit(0)
+if args.operand == 'sizes':
+    sizes = do.get_all_sizes()
+    for size in sizes:
+        print(size)
 
-# Print a detailed list of available regions
-if args.all_regions:
+if args.operand == 'regions':
+    # Print a detailed list of available regions
     regions = do.get_all_regions()
     for region in regions:
         print("{}({})".format(region, region.slug))
     sys.exit(0)
 
-# Print a detailed list of available images
-if args.all_images:
-    images = do.get_all_images()
-    for image in images:
-        print("{}({})".format(image, image.slug))
-    sys.exit(0)
-
-# Print a detailed list of available ssh keys
-if args.all_ssh_keys:
+if args.operand == 'keys':
     keys = do.get_all_sshkeys()
     for key in keys:
         print(key)
-    sys.exit(0)
 
-# Print a detailed list of available droplet sizes
-if args.all_sizes:
-    sizes = do.get_all_sizes()
-    for size in sizes:
-        print(size)
-    sys.exit(0)
+if args.operand == 'images':
+    images = do.get_all_images()
+    for image in images:
+        print("{}({})".format(image, image.slug))
 
-# Show the details of a single droplet and exit
-if args.list_droplet_details:
-    # This should be more verbose
-    print(do.get_droplet(args.list_droplet_details))
-    sys.exit(0)
+if args.operand == 'droplets':
+    # check if we want to destroy a droplet
+    if args.destroy:
+        try:
+            droplet_to_destroy = do.get_droplet(args.destroy)
+            droplet_to_destroy.destroy()
+            sys.exit(0)
+        except Exception as e:
+            print("Unable to destroy droplet: {}".format(e))
+            sys.exit(1)
 
-# Create a droplet based on the given arguments
-if args.create_droplet:
-    # TODO add other options such as ssh keys, backups, etc.
-    try:
-        new_droplet = digitalocean.Droplet(token=api_token,
-                                           name=args.name,
-                                           image=args.image,
-                                           region=args.region,
-                                           size_slug=args.size,
-                                           ssh_keys=args.ssh_keys)
-        new_droplet.create()
-        print("Successfuly created {}({})"
-              .format(new_droplet.name, new_droplet.id))
-        sys.exit(0)
+    droplets = do.get_all_droplets()
+    for droplet in droplets:
+        print(droplet)
 
-    except Exception as e:
-        print("Unable to create droplet: {}".format(e))
-        sys.exit(1)
+if args.operand == 'domains':
+    domains = do.get_all_domains()
+    for domain in domains:
+        print(domain)
 
-if args.destroy_droplet:
-    try:
-        droplet_to_destroy = do.get_droplet(args.destroy_droplet)
-        droplet_to_destroy.destroy()
-        sys.exit(0)
-    except Exception as e:
-        print("Unable to destroy droplet: {}".format(e))
-        sys.exit(1)
-
-# If the program hasn't exited by now, just show a list of active droplets
-droplets = do.get_all_droplets()
-for droplet in droplets:
-    print(droplet)
+else:
+    print("{} is not a valid operand, please choose one of the following:"
+            .format(args.operand))
+    print("droplets, domains, keys, regions, sizes, images.")
