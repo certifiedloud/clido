@@ -47,7 +47,7 @@ parser.add_argument('-r', '--region',
                     help="region-slug of droplet to create")
 parser.add_argument('-k', '--ssh-keys', default=[], nargs='+', type=int,
                     help="list of ssh key id's to add to new droplets")
-parser.add_argument('-l', '--lookup', action='store_true',
+parser.add_argument('-l', '--lookup',
                     help="lookup details of <operand> by <id>")
 args = parser.parse_args()
 
@@ -124,7 +124,7 @@ elif args.operand == 'domains':
 
     if args.lookup:
         domain = digitalocean.Domain(token=api_token,
-                                     name=args.name)
+                                     name=args.lookup)
         records = domain.get_records()
         record_list = []
         for record in records:
