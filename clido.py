@@ -1,4 +1,5 @@
 import argparse
+from tabulate import tabulate
 import sys
 from os.path import expanduser
 
@@ -34,6 +35,8 @@ parser.add_argument('-d', '--destroy',
                     help="destroy <operand> by <id>")
 parser.add_argument('-n', '--name',
                     help="name of droplet to create")
+parser.add_argument('-u', '--update-domain', action="store_true",
+                    help="update specifc domain with a record")
 parser.add_argument('-a', '--ip-address',
                     help="Specify ip address for domain creation")
 parser.add_argument('-s', '--size',
@@ -44,6 +47,8 @@ parser.add_argument('-r', '--region',
                     help="region-slug of droplet to create")
 parser.add_argument('-k', '--ssh-keys', default=[], nargs='+', type=int,
                     help="list of ssh key id's to add to new droplets")
+parser.add_argument('-l', '--lookup', action='store_true',
+                    help="lookup details of <operand> by <id>")
 args = parser.parse_args()
 
 if args.operand == 'sizes':
@@ -109,6 +114,27 @@ elif args.operand == 'domains':
         except Exception as e:
             print("Couldn't destroy domain: {}".format(e))
             sys.exit(1)
+
+    # Check if we want to update existing domain
+    if args.update_domain:
+        if not args.name:
+            print("You must specify -n, which domain to update")
+            sys.exit(1)
+    # TODO finish domain record updating
+
+    if args.lookup:
+        domain = digitalocean.Domain(token=api_token,
+                                     name=args.name)
+        records = domain.get_records()
+        record_list = []
+        for record in records:
+            record_list.append({"Type": record.type,
+                                "Priority": record.priority,
+                                "Name": record.name,
+                                "Data": record.data,
+                                "ID": record.id})
+        print(tabulate(record_list, headers='keys', stralign='center'))
+        sys.exit(0)
 
     # If nothing else, just print a list of domains
     domains = do.get_all_domains()
