@@ -1,2 +1,2 @@
-python-digitalocean
-tabulate
+python-digitalocean # digitalocean API wrapper
+tabulate # prettyprinter for dns information
